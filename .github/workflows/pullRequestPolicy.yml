@@ -1,0 +1,31 @@
+name: PR Build
+
+on:
+  pull_request:
+    branches: [ master,staging ]
+    paths:
+      - 'Api/**'
+      - 'Test/**'
+
+jobs:
+  build_and_test:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Setup .NET Core
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 5.0.301
+    - name: Install dependencies
+      working-directory: Api
+      run: dotnet restore
+    - name: Build
+      working-directory: Api
+      run: dotnet build --configuration Release --no-restore
+    - name: Test
+      working-directory: Test
+      env: 
+        Cloud: Test
+      run: dotnet test
