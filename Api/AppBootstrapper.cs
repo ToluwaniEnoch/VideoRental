@@ -1,8 +1,4 @@
-﻿using Api.Authentication;
-using Api.Data;
-using Api.Data.Entities.Account;
-using Api.Services.Auth;
-using Api.Services.Infrastructure;
+﻿using Api.Data;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
@@ -17,10 +13,8 @@ namespace Api
         /// <param name="services"></param>
         public static void InitCoreServicesAndRepositories(this IServiceCollection services)
         {
-            services.AddTransient<IJwtTokenGenerator, JwtTokenGenerator>();
-            services.AddScoped<IUnitOfWork, UnitOfWork>();
-            services.AddTransient<IOtpGenerator, OtpGenerator>();
-            services.AddTransient<ISessionService, SessionService>();            
+           services.AddScoped<IUnitOfWork, UnitOfWork>();
+           
             services.AddMediatR(Assembly.GetExecutingAssembly());
             services.AddHttpClient();
             AutoInjectLayers(ref services);

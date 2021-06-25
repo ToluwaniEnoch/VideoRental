@@ -1,5 +1,4 @@
 ﻿using Api;
-using Api.Authentication;
 using Api.Data;
 using Api.Models.Constants;
 using Dapper;
@@ -22,7 +21,6 @@ namespace Test
             IServiceCollection service = new ServiceCollection();
 
             service.InitCoreServicesAndRepositories();
-            service.ConfigureIdentity();
             service.AddLogging();
 
             service.AddMediatR(Assembly.GetExecutingAssembly());

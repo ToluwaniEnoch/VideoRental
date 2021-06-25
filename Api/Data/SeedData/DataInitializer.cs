@@ -13,49 +13,9 @@ namespace Api.Data.SeedData
 {
     public static class DataInitializer
     {
-        public static void SeedData(UserManager<Persona> userManager, AppDbContext dbContext)
-        {
-            SeedRoles(dbContext).GetAwaiter().GetResult();
-            SeedUsers(userManager, dbContext);
+        public static void SeedData(AppDbContext dbContext)
+        {            
             SeedVideos(dbContext).GetAwaiter().GetResult();
-        }
-
-        private static void SeedUsers(UserManager<Persona> userManager, AppDbContext dbContext)
-        {
-            if (userManager.FindByEmailAsync("JoshuaKing@localmail.com").GetAwaiter().GetResult() == null)
-            {
-                Persona user = new Persona("JoshuaKing@localmail.com", "Joshua", "King");
-                
-                Console.WriteLine("creating seed data");
-                var result = userManager.CreateAsync(user, "Password123#").GetAwaiter().GetResult();
-
-               
-                
-                if (result.Succeeded)
-                {
-                    var role = dbContext.Roles.FirstOrDefaultAsync(c => c.Name == RoleConstants.Customer).GetAwaiter().GetResult();
-                    var userRole = new IdentityUserRole<Guid> { UserId = user.Id, RoleId = role.Id} ;
-                    dbContext.UserRoles.AddAsync(userRole);
-                       
-                    Console.WriteLine($"Customer Role ID is {role.Id} ");
-                    var isSaved = dbContext.SaveChangesAsync().GetAwaiter().GetResult();
-                }
-
-               
-            }
-        }
-        private async static Task SeedRoles(AppDbContext dbContext)
-        {
-            if (!await dbContext.Roles.AnyAsync(c => c.Name == RoleConstants.Customer));
-            {
-                var role = RoleConstants.GetDefaultTemplateRoles().First(x => x.Name == RoleConstants.Customer);
-
-                dbContext.Roles.Add(role);
-                var roleResult = await dbContext.SaveChangesAsync();
-
-                Console.WriteLine("Role seeded.");
-                
-            }
         }
         private async static Task SeedVideos(AppDbContext dbContext)
         {

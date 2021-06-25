@@ -11,6 +11,8 @@ namespace Api.Data.Entities.Parties
         public string Title { get; set; }
         public VideoType Type { get; set; }
         public VideoGenre Genre { get; set; }
+        public int YearReleased { get; set; }
+        public int MaximumAge { get; set; }
     }
     
     public class ChildrenMovie

@@ -1,4 +1,3 @@
-using Api.Authentication;
 using Api.Data;
 using Api.Data.Entities.Account;
 using Api.Models.Constants;
@@ -36,9 +35,7 @@ namespace Api
         {
             //DB Setup
             services.AddDbContext<AppDbContext>(options => options.UseNpgsql(StringConstants.ConnectionString));
-            //Auth Setup
-            services.ConfigureAuthentication(Configuration);
-            services.ConfigureIdentity();
+
             //Cors Setup
             var origins = Configuration[AllowOrigins];
             services.AddHttpContextAccessor();
@@ -109,7 +106,7 @@ namespace Api
         /// </summary>
         /// <param name="app"></param>
         /// <param name="env"></param>
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, UserManager<Persona> userManager, AppDbContext dbContext)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, AppDbContext dbContext)
         {
             if (env.IsDevelopment() || env.IsStaging())
             {
@@ -128,7 +125,7 @@ namespace Api
             });
             if (env.IsDevelopment() || env.IsStaging())
             {
-                Api.Data.SeedData.DataInitializer.SeedData(userManager, dbContext);
+                Api.Data.SeedData.DataInitializer.SeedData(dbContext);
             }
         }
 

@@ -43,7 +43,7 @@ namespace Api.Data.Repositories.Internal
 
         public async ValueTask<bool> VideoExists(string Title)
         {
-            var videoExists = await _dbContext.Videos.AnyAsync(x => !x.IsDeleted && x.Title.Contains(Title));
+            var videoExists = await _dbContext.Videos.AnyAsync(x => !x.IsDeleted && x.Title.ToLower().Contains(Title.ToLower()));
             return videoExists;
         }
     }

@@ -10,9 +10,7 @@ using System.Threading.Tasks;
 namespace Api.Controllers
 {
     [ApiController]
-    [Route("/[controller]")]
-    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-    
+    [Route("/[controller]")] 
 
     public class VideoController : BaseController
     {
@@ -24,7 +22,8 @@ namespace Api.Controllers
         }
 
         /// <summary>
-        /// Adds Video to the db. Unaccessible to Customer logins.
+        /// Adds Video to the db. 
+        /// Please note that Titles are unique.
         /// </summary>
         /// <param name="payload"></param>
         /// <returns></returns>
@@ -60,7 +59,7 @@ namespace Api.Controllers
         /// <param name="limit"></param>
         /// <returns></returns>
         [HttpGet]
-        public async Task<ActionResult<ApiResponse<ListResponse<VideoResponse>>>> GetVideos([FromQuery] VideoFilterPayload payload, [FromQuery] int skip = 0, [FromQuery] int limit = 20)
+        public async Task<ActionResult<ApiResponse<ListResponse<VideoResponse>>>> GetVideos([FromQuery] VideoFilterPayload payload, [FromQuery] int skip = 0, [FromQuery] int limit = 5)
         {
             var result = await _videoService.GetAllVideos(payload, skip, limit);
             return HandleResponse(result);

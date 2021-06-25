@@ -1,20 +1,10 @@
 ﻿using Api.Data;
-using Api.Data.Entities.Account;
+using Api.Data.Entities.Parties;
 using Api.Models.Constants;
 using Api.Models.Enums;
-using Api.Models.Internals;
 using Api.Models.Payloads;
 using Api.Services;
-using Api.Services.Auth;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
-using Moq;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Test.Helpers;
 using Xunit;
 
 namespace Test.Services.PriceCalculator
@@ -22,62 +12,96 @@ namespace Test.Services.PriceCalculator
     public class PriceCalculatorTests : BaseTest
     {
 
-        #region CalculatePrice
+        #region CalculatePrice_ POSITIVE TEST CASES
         [Fact]
-        public async void CalculatePrice_ValidPayload_ReturnSuccess()
+        public async void CalculatePrice_RegularMovie_ValidPayload_ReturnSuccess()
         {
-            TestRef<Session> testRef = new TestRef<Session>();
+            var collection = GetCollection().BuildServiceProvider();
+            var videoService = collection.GetService<IVideoService>();
+            var dbContext = collection.GetService<AppDbContext>();
+            var video = new Video { Title = "Hobbits", Type = VideoType.Regular, Genre = VideoGenre.Action };
+            await dbContext.Videos.AddAsync(video);
+            await dbContext.SaveChangesAsync();
+            var pricePayload = new PriceCalculatorPayload { FirstName = "Toluwani", NumberOfDays = 5, Title = "Hobbits" };
+            var result = videoService.CalculatePrice(pricePayload);
+            Assert.Equal(50M, result.Result.Data.Cost);      
+        }
 
-            var collection = GetCollection().AddTransient(xy =>
-            {
-                var moqObj = new Mock<ISessionService>();
-                moqObj.Setup(x => x.HasPermission(It.IsAny<string>())).Returns<string>(c => !string.IsNullOrEmpty(c));
-                moqObj.Setup(x => x.GetSession()).Returns(testRef.GetRef);
-                return moqObj.Object;
-            }).BuildServiceProvider();
+        [Fact]
+        public async void CalculatePrice_ChildrenMovie_ValidPayload_ReturnSuccess()
+        {
+            var collection = GetCollection().BuildServiceProvider();
+            var videoService = collection.GetService<IVideoService>();
+            var dbContext = collection.GetService<AppDbContext>();
+            var video = new Video { Title = "Tom and Jerry", Type = VideoType.ChildrenMovie, Genre = VideoGenre.Action, MaximumAge = 20 };
+            await dbContext.Videos.AddAsync(video);
+            await dbContext.SaveChangesAsync();
+            var pricePayload = new PriceCalculatorPayload { FirstName = "Toluwani", NumberOfDays = 5, Title = "Tom and Jerry" };
+            var result = videoService.CalculatePrice(pricePayload);
+            Assert.Equal(50M, result.Result.Data.Cost);
+        }
 
-            var userManager = collection.GetService<UserManager<Persona>>();
-            var roleManager = collection.GetService<RoleManager<Role>>();
-            Assert.NotNull(roleManager);
-            var user = new Persona("johnjacobs@localhost.com", "John", "Jacobs");
-            if (userManager is not null)
-            {
-                var creation = await userManager.CreateAsync(user, "Password123#");
-                Assert.True(creation.Succeeded);
-            }
-            var appDbContext = collection.GetService<AppDbContext>();
-            Assert.NotNull(appDbContext);
-
-            var role = new Role { Name = "Admin", Permissions = new List<string> { } };
-            if (roleManager is not null && userManager is not null)
-            {
-                await roleManager.CreateAsync(role);
-                await userManager.AddToRoleAsync(user, role.Name);
-            }
-            if (appDbContext is not null)
-            {
-                await appDbContext.SaveChangesAsync();
-            }
-
-            testRef.GetRef = () => new Session(user.Id, user.FirstName, user.Email, role.Name, role.Id);
-
-
-            var loginService = collection.GetService<IAuthSetupService>();
-            var rsp = loginService?.LoginAsync(new LoginPayload("johnjacobs@localhost.com", "Password123#")).GetAwaiter().GetResult();
-            
-
-            var collectionService = collection.GetService<IVideoService>();
-            var video = new CreateVideoPayload { Title = "Hobbits", Type = VideoType.Regular, Genre = VideoGenre.Action };
-            var register = collectionService.RegisterVideo(video).Result;
-            await appDbContext.SaveChangesAsync();
-            
-            var service = collection.GetService<IPriceCalculatorService>();
-            var result = service.CalculatePrice(new PriceCalculatorPayload { Title = "Hobbits", NumberOfDays = 2 }).Result;
-            Assert.Equal(ResponseCodes.Success, result.Code);
-            Assert.Equal(20M, result.Data.Cost);
-
-
+        [Fact]
+        public async void CalculatePrice_NewRelease_ValidPayload_ReturnSuccess()
+        {
+            var collection = GetCollection().BuildServiceProvider();
+            var videoService = collection.GetService<IVideoService>();
+            var dbContext = collection.GetService<AppDbContext>();
+            var video = new Video { Title = "Avengers", Type = VideoType.NewRelease, Genre = VideoGenre.Action, YearReleased = 2025 };
+            await dbContext.Videos.AddAsync(video);
+            await dbContext.SaveChangesAsync();
+            var pricePayload = new PriceCalculatorPayload { FirstName = "Toluwani", NumberOfDays = 5, Title = "Avengers" };
+            var result = videoService.CalculatePrice(pricePayload);
+            Assert.Equal(70M, result.Result.Data.Cost);
         }
         #endregion
+
+        #region CalculatePrice_NEGATIVE TEST CASES
+        [Fact]
+        public async void CalculatePrice_ChildrenMovie_InvalidPayload_NoMaximumAge_ReturnFailure()
+        {
+            var collection = GetCollection().BuildServiceProvider();
+            var videoService = collection.GetService<IVideoService>();
+            var dbContext = collection.GetService<AppDbContext>();
+            var video = new Video { Title = "Tom and Jerry", Type = VideoType.ChildrenMovie, Genre = VideoGenre.Action};
+            await dbContext.Videos.AddAsync(video);
+            await dbContext.SaveChangesAsync();
+            var pricePayload = new PriceCalculatorPayload { FirstName = "Toluwani", NumberOfDays = 5, Title = "Tom and Jerry" };
+            var result = videoService.CalculatePrice(pricePayload);
+            Assert.Equal(ResponseCodes.NoData, result.Result.Code);
+        }
+
+        [Fact]
+        public async void CalculatePrice_NewRelease_InvalidPayload_NoYearReleased_ReturnFailure()
+        {
+            var collection = GetCollection().BuildServiceProvider();
+            var videoService = collection.GetService<IVideoService>();
+            var dbContext = collection.GetService<AppDbContext>();
+            var video = new Video { Title = "Tom and Jerry", Type = VideoType.NewRelease, Genre = VideoGenre.Action };
+            await dbContext.Videos.AddAsync(video);
+            await dbContext.SaveChangesAsync();
+            var pricePayload = new PriceCalculatorPayload { FirstName = "Toluwani", NumberOfDays = 5, Title = "Tom and Jerry" };
+            var result = videoService.CalculatePrice(pricePayload);
+            Assert.Equal(ResponseCodes.NoData, result.Result.Code);
+        }
+
+        [Fact]
+        public async void CalculatePrice_NewRelease_InvalidPayload_WrongTitle_ReturnFailure()
+        {
+            var collection = GetCollection().BuildServiceProvider();
+            var videoService = collection.GetService<IVideoService>();
+            var dbContext = collection.GetService<AppDbContext>();
+            var video = new Video { Title = "Tom and Jerry", Type = VideoType.NewRelease, Genre = VideoGenre.Action, YearReleased = 2025 };
+            await dbContext.Videos.AddAsync(video);
+            await dbContext.SaveChangesAsync();
+            var pricePayload = new PriceCalculatorPayload { FirstName = "Toluwani", NumberOfDays = 5, Title = "Big Bang Theory" };
+            var result = videoService.CalculatePrice(pricePayload);
+            Assert.Equal(ResponseCodes.BadRequest, result.Result.Code);
+        }
+
+
+        #endregion
+
+
     }
 }
