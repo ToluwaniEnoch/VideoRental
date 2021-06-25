@@ -5,7 +5,7 @@ namespace Api.Models.Constants
 {
     public static class StringConstants
     {
-        public static readonly string ConnectionString = Environment.GetEnvironmentVariable("CONNECTION_STRING") ?? "Server=localhost;port=5432;database=VideoRentalsDB;";
+        public static readonly string ConnectionString = Environment.GetEnvironmentVariable("CONNECTION_STRING") ?? "Server=localhost;port=5432;database=VideoRentalsDB;User ID =postgres;Password=password123;IntegratedSecurity=true";
             
 
         public static readonly string JwtKey = "JwtKey";

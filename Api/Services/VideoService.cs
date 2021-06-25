@@ -57,14 +57,8 @@ namespace Api.Services
         }
 
         public async Task<ApiResponse<VideoResponse>> RegisterVideo(CreateVideoPayload payload)
-        {
-            
+        {            
             _logger.LogInformation($"Registration initiated for video Titled: {payload.Title}");
-
-            if (string.IsNullOrEmpty(payload.Title))
-            {
-                return new ApiResponse<VideoResponse>("Title must be provided") { Code = ResponseCodes.NoData };
-            }
 
             var videoExists = await _unitOfWork.VideoRepository.VideoExists(payload.Title);
             if (videoExists)
@@ -81,6 +75,8 @@ namespace Api.Services
                 YearReleased = payload.YearReleased,
                 MaximumAge = payload.MaximumAge
             };
+            
+                
 
             await _unitOfWork.VideoRepository.CreateAsync(video);
 
@@ -114,16 +110,19 @@ namespace Api.Services
                     return new ApiResponse<PriceCalculatorResponse>("") { Code = ResponseCodes.Success, Data = new PriceCalculatorResponse(payload.Title, cost) };
 
                 case VideoType.ChildrenMovie:
-                    if (movie.MaximumAge < 1) return new ApiResponse<PriceCalculatorResponse>("Please input maximum age") { Code = ResponseCodes.NoData};
+                    if (movie.MaximumAge is null) return new ApiResponse<PriceCalculatorResponse>("") { Code = ResponseCodes.NoData };
+                    else if  (movie.MaximumAge < 1) return new ApiResponse<PriceCalculatorResponse>("Please input maximum age") { Code = ResponseCodes.NoData};
 
-                    cost = await ChildrenMoviePriceCalculator(payload.NumberOfDays, movie.MaximumAge, payload.FirstName);
+                    cost = await ChildrenMoviePriceCalculator(payload.NumberOfDays, movie.MaximumAge.Value, payload.FirstName);
                     await persistToDb(payload.Title, cost, payload.FirstName, payload.NumberOfDays);
                     return new ApiResponse<PriceCalculatorResponse>("") { Code = ResponseCodes.Success, Data = new PriceCalculatorResponse(payload.Title, cost) };
 
                 case VideoType.NewRelease:
-                    //accepts years between 2020 and 2040
-                    if (movie.YearReleased < 2020 || movie.YearReleased > 2040) return new ApiResponse<PriceCalculatorResponse>("Please input a valid year") { Code = ResponseCodes.NoData };
-                    cost = await NewReleaseMoviePriceCalculator(payload.NumberOfDays, movie.YearReleased, payload.FirstName);
+                    //accepts years between 2021 and 2040
+                    if (movie.YearReleased is null) return new ApiResponse<PriceCalculatorResponse>("") { Code = ResponseCodes.NoData };
+                    else if (movie.YearReleased < 2021 || movie.YearReleased > 2040) return new ApiResponse<PriceCalculatorResponse>("Please input a valid year") { Code = ResponseCodes.NoData };
+                    
+                    cost = await NewReleaseMoviePriceCalculator(payload.NumberOfDays, movie.YearReleased.Value, payload.FirstName);
                     await persistToDb(payload.Title, cost, payload.FirstName, payload.NumberOfDays);
                     return new ApiResponse<PriceCalculatorResponse>("") { Code = ResponseCodes.Success, Data = new PriceCalculatorResponse(payload.Title, cost) };
                 default:
