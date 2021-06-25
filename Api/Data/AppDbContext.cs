@@ -20,7 +20,6 @@ namespace Api.Data
         {
             _dco = dco;
         }
-        public DbSet<Customer> Customers { get; set; }
         public DbSet<Video> Videos { get; set; }
 
 

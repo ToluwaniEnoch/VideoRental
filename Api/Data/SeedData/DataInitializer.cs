@@ -1,12 +1,7 @@
-﻿using Api.Data.Entities.Account;
-using Api.Data.Entities.Parties;
-using Api.Models.Constants;
+﻿using Api.Data.Entities.Parties;
 using Api.Models.Enums;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace Api.Data.SeedData
