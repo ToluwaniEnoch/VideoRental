@@ -22,6 +22,8 @@ namespace Api.Data
         }
         public DbSet<Customer> Customers { get; set; }
         public DbSet<Video> Videos { get; set; }
+        public DbSet<ChildrenMovie> ChildrenMovies { get; set; }
+        public DbSet<NewReleaseMovie> NewReleaseMovies { get; set; }
 
         public DbSet<SearchHistory> SearchHistories { get; set; }
 

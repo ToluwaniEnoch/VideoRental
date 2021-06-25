@@ -71,8 +71,7 @@ namespace Api.Controllers
         /// </summary>
         /// <param name="payload"></param>
         /// <returns></returns>
-        [HttpPost]
-        [Route("Cost")]
+        [HttpPost("cost")]        
         public async Task<ActionResult<ApiResponse<PriceCalculatorResponse>>> PostCalculate([FromBody] PriceCalculatorPayload payload)
         {
             var result = await _videoService.CalculatePrice(payload);

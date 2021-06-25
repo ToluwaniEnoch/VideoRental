@@ -99,6 +99,20 @@ namespace Test.Services.PriceCalculator
             Assert.Equal(ResponseCodes.BadRequest, result.Result.Code);
         }
 
+        [Fact]
+        public async void CalculatePrice_InvalidPayload_NoFirstName_ReturnFailure()
+        {
+            var collection = GetCollection().BuildServiceProvider();
+            var videoService = collection.GetService<IVideoService>();
+            var dbContext = collection.GetService<AppDbContext>();
+            var video = new Video { Title = "Tom and Jerry", Type = VideoType.NewRelease, Genre = VideoGenre.Action, YearReleased = 2025 };
+            await dbContext.Videos.AddAsync(video);
+            await dbContext.SaveChangesAsync();
+            var pricePayload = new PriceCalculatorPayload { NumberOfDays = 5, Title = "Big Bang Theory" };
+            var result = videoService.CalculatePrice(pricePayload);
+            Assert.Equal(ResponseCodes.NoData, result.Result.Code);
+        }
+
 
         #endregion
 

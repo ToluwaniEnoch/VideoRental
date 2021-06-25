@@ -92,7 +92,8 @@ namespace Api.Services
 
         public async Task<ApiResponse<PriceCalculatorResponse>> CalculatePrice(PriceCalculatorPayload payload)
         {
-            if (payload.Title is null) return new ApiResponse<PriceCalculatorResponse>("Title input cannot be empty");
+            if (payload.Title is null || payload.FirstName is null) return new ApiResponse<PriceCalculatorResponse>("Title and First name input cannot be empty") { Code = ResponseCodes.NoData};
+            
 
             var titleExists = await _unitOfWork.VideoRepository.VideoExists(payload.Title);
             if (!titleExists) return new ApiResponse<PriceCalculatorResponse>("Title does not exist") { Code = ResponseCodes.BadRequest };
@@ -144,7 +145,7 @@ namespace Api.Services
 
         private async Task<Decimal> NewReleaseMoviePriceCalculator(int numberOfDays, int yearReleased, string FirstName)
         {
-            var cost = StringConstants.NEW_RELEASE_RATE * numberOfDays - (yearReleased - 2020);
+            var cost = StringConstants.NEW_RELEASE_RATE * numberOfDays - (yearReleased - 2021);
             return cost;
         }
 

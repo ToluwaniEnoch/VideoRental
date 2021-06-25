@@ -1,6 +1,7 @@
 ﻿using Api.Models.Enums;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -15,17 +16,23 @@ namespace Api.Data.Entities.Parties
         public int MaximumAge { get; set; }
     }
     
-    public class ChildrenMovie
+    public class ChildrenMovie : BaseEntity
     {
         public string Title { get; set; }
         public int MaximumAge { get; set; }
-        public Guid Id { get; set; }
+
+        public Guid VideoId { get; set; }
+
+        [ForeignKey(nameof(VideoId))]
+        public Video Video { get; set; }
     }
-    public class NewReleaseMovie
+    public class NewReleaseMovie : BaseEntity
     {
         public string Title { get; set; }
         public int YearReleased { get; set; }
-        public Guid Id { get; set; }
+        public Guid VideoId { get; set; }
+        [ForeignKey(nameof(VideoId))]
+        public Video Video { get; set; }
     }
     
 }
