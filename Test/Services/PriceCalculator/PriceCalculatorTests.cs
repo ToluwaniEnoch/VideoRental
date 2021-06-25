@@ -52,7 +52,7 @@ namespace Test.Services.PriceCalculator
             await dbContext.SaveChangesAsync();
             var pricePayload = new PriceCalculatorPayload { FirstName = "Toluwani", NumberOfDays = 5, Title = "Avengers" };
             var result = videoService.CalculatePrice(pricePayload);
-            Assert.Equal(70M, result.Result.Data.Cost);
+            Assert.Equal(71M, result.Result.Data.Cost);
         }
         #endregion
 
