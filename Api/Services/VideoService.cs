@@ -46,7 +46,7 @@ namespace Api.Services
             if (video is null)
                 return new ApiResponse<VideoResponse>("Video does not exist")
                 {
-                    Code = ResponseCodes.NoData,
+                    Code = ResponseCodes.BadRequest,
                 };
 
             return new ApiResponse<VideoResponse>("Video Retreived Successfully")
