@@ -9,6 +9,5 @@ namespace Api.Services.Auth
     {
         Task<ApiResponse<LoginResponse>> LoginAsync(LoginPayload payload, CancellationToken ct = default);
 
-        Task<ApiResponse<StatusResponse>> SetPasswordAsync(ChangePasswordPayload payload, CancellationToken ct = default);
     }
 }

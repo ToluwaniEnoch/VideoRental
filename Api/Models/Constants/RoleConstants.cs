@@ -20,7 +20,7 @@ namespace Api.Models.Constants
 
                 Permissions = new List<string>
                 {
-                    CanDoAnything,
+                    CanViewVideos,
                 }
             },
 
@@ -30,7 +30,7 @@ namespace Api.Models.Constants
 
                 Permissions = new List<string>
                 {
-                    CanUploadVideos,
+                    CanUploadVideos,CanViewVideos
                 }
             }
         };

@@ -59,10 +59,10 @@ namespace Api.Data.SeedData
         }
         private async static Task SeedVideos(AppDbContext dbContext)
         {
-            var result = await dbContext.Videos.AnyAsync(c => c.Title.ToLower() == "Lion King".ToLower());
+            var result = await dbContext.Videos.CountAsync();
             Console.WriteLine(result);
                 
-            if (!result);
+            if (result < 5)
             {
                 Video video1 = new Video { Title = "Lion King", Type = VideoType.ChildrenMovie, Genre = VideoGenre.Drama };
                 Video video2 = new Video { Title = "Avengers", Type = VideoType.Regular, Genre = VideoGenre.Action };

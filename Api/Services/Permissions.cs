@@ -7,11 +7,10 @@ namespace Api.Services
 {
     public static class Permissions
     {
-        private const string Customer = "Customer/";
+        private const string Video = "Video/";
 
-        public const string CanDoAnything = Customer + nameof(CanDoAnything);
-        private const string Admin = "Admin/";
-        public const string CanUploadVideos = Customer + nameof(CanUploadVideos);
+        public const string CanViewVideos = Video + nameof(CanViewVideos);
+        public const string CanUploadVideos = Video + nameof(CanUploadVideos);
 
 
     }

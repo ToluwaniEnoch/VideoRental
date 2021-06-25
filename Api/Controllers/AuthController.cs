@@ -16,16 +16,18 @@ namespace Api.Controllers
     [Route("/[controller]")]
     public class AuthController : BaseController
     {
-        private readonly IAuthRecoverService recoverService;
         private readonly IAuthSetupService authSetupService;
         /// <summary>
         /// Authentication Controller public constructor
         /// </summary>
-        /// <param name="recoverService"></param>
+        /// <remarks>A customer account has been seeded.
+        /// Please login with 
+        /// Email:  JoshuaKing@localmail.com 
+        /// Password: Password123#
+        /// </remarks>
         /// <param name="authSetupService"></param>
-        public AuthController(IAuthRecoverService recoverService, IAuthSetupService authSetupService)
+        public AuthController(IAuthSetupService authSetupService)
         {
-            this.recoverService = recoverService;
             this.authSetupService = authSetupService;
         }
         /// <summary>
@@ -41,26 +43,6 @@ namespace Api.Controllers
             return HandleResponse(result);
         }
 
-        [HttpPost("setpassword")]
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-        public async Task<ActionResult<ApiResponse<StatusResponse>>> PostSetPassword([FromBody] ChangePasswordPayload payload, CancellationToken ct = default)
-        {
-            var result = await authSetupService.SetPasswordAsync(payload, ct);
-            return HandleResponse(result);
-        }
-
-        [HttpPost("forgotpassword")]
-        public async Task<ActionResult<ApiResponse<StatusResponse>>> PostForgotPassword([FromBody] ForgotPasswordPayload payload, CancellationToken ct = default)
-        {
-            var result = await recoverService.ForgotPasswordAsync(payload, ct);
-            return HandleResponse(result);
-        }
-
-        [HttpPost("resetpassword")]
-        public async Task<ActionResult<ApiResponse<StatusResponse>>> PostResetPassword([FromBody] ResetPasswordPayload payload, CancellationToken ct = default)
-        {
-            var result = await recoverService.ResetPasswordAsync(payload, ct);
-            return HandleResponse(result);
-        }
+       
     }
 }

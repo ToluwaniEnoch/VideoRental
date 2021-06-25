@@ -12,5 +12,7 @@ namespace Api.Services
         Task<ApiResponse<VideoResponse>> RegisterVideo(CreateVideoPayload payload);
         Task<ApiResponse<VideoResponse>> GetVideoByIdAsync(Guid id);
         Task<ApiResponse<ListResponse<VideoResponse>>> GetAllVideos(VideoFilterPayload payload, int skip = 0, int limit = 20);
+        Task<ApiResponse<PriceCalculatorResponse>> CalculatePrice(PriceCalculatorPayload payload);
+
     }
 }
