@@ -1,0 +1,107 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Api</name>
+    </assembly>
+    <members>
+        <member name="M:Api.AppBootstrapper.InitCoreServicesAndRepositories(Microsoft.Extensions.DependencyInjection.IServiceCollection)">
+            <summary>
+            Registers All Services In the core project into container
+            </summary>
+            <param name="services"></param>
+        </member>
+        <member name="T:Api.Controllers.BaseController">
+            <summary>
+            Base Controller class
+            </summary>
+        </member>
+        <member name="M:Api.Controllers.BaseController.HandleResponse``1(``0)">
+            <summary>
+            Handle Response Method
+            </summary>
+            <typeparam name="TRes"></typeparam>
+            <param name="result"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Api.Controllers.VideoController.PostRegister(Api.Models.Payloads.CreateVideoPayload)">
+            <summary>
+            Adds Video to the db. 
+            Please note that Titles are unique.
+            </summary>
+            <param name="payload"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Api.Controllers.VideoController.GetVideoById(System.Guid)">
+            <summary>
+            Returns a video with a specified id
+            </summary>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Api.Controllers.VideoController.GetVideos(Api.Models.Payloads.VideoFilterPayload,System.Int32,System.Int32)">
+            <summary>
+            Returns all videos, 5 per page
+            You can increase number of videos per page by increasing the value for limit
+            Note that video type and Video Genre are enum
+            Video type: 0:Regular , 1: Children Movie 2: New Release
+            Video Genre: 0: Action, 1: Drama, 2: Romance, 3: Comedy, 4: Horror
+            </summary>
+            <param name="payload"></param>
+            <param name="skip"></param>
+            <param name="limit"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Api.Controllers.VideoController.PostCalculate(Api.Models.Payloads.PriceCalculatorPayload)">
+            <summary>
+            Returns the cost of renting a movie
+            Note that price depends on number of days and type of movie
+            </summary>
+            <param name="payload"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Api.Data.Repositories.Internal.GenericRepository`1.FindByIdAsync(System.Guid,System.Threading.CancellationToken)">
+            <summary>
+            Get Item by ID with tracking
+            </summary>
+            <remarks>This return item even if its flag as deleted</remarks>
+            <param name="id"></param>
+            <returns>TEntity</returns>
+        </member>
+        <member name="M:Api.Data.Repositories.Internal.GenericRepository`1.GetByIdAsync(System.Guid,System.Threading.CancellationToken)">
+            <summary>
+            Get Item by ID with not tracking
+            </summary>
+            <remarks>Return null if the item flag isdeleted </remarks>
+            <param name="id"></param>
+            <returns>Return TEntity or null</returns>
+        </member>
+        <member name="M:Api.Data.Repositories.Internal.GenericRepository`1.CreateAsync(`0,System.Threading.CancellationToken)">
+            <summary>
+            Create new single item
+            </summary>
+            <param name="item"></param>
+            <returns>Return TEntity or null if unable to save</returns>
+        </member>
+        <!-- Badly formed XML comment ignored for member "M:Api.Data.Repositories.Internal.GenericRepository`1.CreateAsync(System.Collections.Generic.IEnumerable{`0},System.Threading.CancellationToken)" -->
+        <member name="M:Api.Data.Repositories.Internal.GenericRepository`1.UpdateAsync(`0,System.Threading.CancellationToken)">
+            <summary>
+            Update item
+            </summary>
+            <param name="item"></param>
+            <returns>Returns true if successful and false if not</returns>
+        </member>
+        <member name="M:Api.Startup.ConfigureServices(Microsoft.Extensions.DependencyInjection.IServiceCollection)">
+            <summary>
+            Configure DI services
+            </summary>
+            <param name="services"></param>
+        </member>
+        <member name="M:Api.Startup.Configure(Microsoft.AspNetCore.Builder.IApplicationBuilder,Microsoft.AspNetCore.Hosting.IWebHostEnvironment,Api.Data.AppDbContext)">
+            <summary>
+            Configure middleware
+            </summary>
+            <param name="app"></param>
+            <param name="env"></param>
+        </member>
+    </members>
+</doc>
