@@ -77,7 +77,9 @@ namespace Api.Services
             {
                 Title = payload.Title, 
                 Type = payload.Type, 
-                Genre = payload.Genre 
+                Genre = payload.Genre, 
+                YearReleased = payload.YearReleased,
+                MaximumAge = payload.MaximumAge
             };
 
             await _unitOfWork.VideoRepository.CreateAsync(video);
@@ -139,6 +141,7 @@ namespace Api.Services
                 Price = cost,
                 UserFirstName = firstName,
                 NumberOfDays = numberOfDays
+                
             };
             var result = await _unitOfWork.SearchHistoryRepository.CreateAsync(searchHistory);
         }
